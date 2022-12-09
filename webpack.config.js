@@ -19,7 +19,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /(node_modules)/,
-        use: ['bebel-loader']
+        use: ['babel-loader']
       }
     ]
   }
