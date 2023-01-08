@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 
 const maxRandomInt = 1000;
 const FULL_DATE_TRAVEL = 'DD/MM/YY HH:mm';
-const DATE_TRAVEL = 'MMM/YY';
+const DATE_TRAVEL = 'MMM YY';
 const TIME_TRAVEL = 'HH:mm';
 
 
