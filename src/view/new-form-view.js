@@ -1,4 +1,5 @@
-import {createElement} from '../render.js';
+import { createElement } from '../render.js';
+import { humanizeFullDateTravel } from '../utils.js';
 
 function createNewFormTemplate () {
   return (`<li class="trip-events__item">

@@ -8,18 +8,21 @@ import PointView from '../view/destination-points-view.js';
 export default class ListPresenter {
   listComponent = new ListView;
 
-  constructor({listConteiner}) {
+  constructor({listConteiner, destinationsModel}) {
     this.listConteiner = listConteiner;
+    this.destinationsModel = destinationsModel;
   }
 
   init() {
+    this.destinationsList = [...this.destinationsModel.getDestinations()];
+
     render(this.listComponent, this.listConteiner);
-    render(new SortView, this.listComponent.getElement());
     render(new NewFormView, this.listComponent.getElement());
+    render(new SortView, this.listComponent.getElement());
     render(new EditView, this.listComponent.getElement(), RenderPosition.BEFOREBEGIN);
 
-    for (let i = 0; i < 3; i++) {
-      render(new PointView, this.listComponent.getElement());
+    for (let i = 0; i < this.destinationsList.length; i++) {
+      render(new PointView({destination: this.destinationsList[i]}), this.listComponent.getElement());
     }
   }
 
