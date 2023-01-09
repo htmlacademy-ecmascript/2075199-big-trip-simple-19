@@ -8,22 +8,25 @@ import { offersByType } from '../mocks/destinations.js';
 
 
 export default class ListPresenter {
-  listComponent = new ListView;
+  #listConteiner = null;
+  #destinationsModel = null;
+
+  #listComponent = new ListView;
 
   constructor({listConteiner, destinationsModel}) {
-    this.listConteiner = listConteiner;
-    this.destinationsModel = destinationsModel;
+    this.#listConteiner = listConteiner;
+    this.#destinationsModel = destinationsModel;
   }
 
   init() {
-    this.destinationsList = [...this.destinationsModel.getDestinations()];
-    render(new SortView, this.listComponent.getElement());
-    render(this.listComponent, this.listConteiner);
-    render(new NewFormView({trip: this.destinationsList[0], allOffers: offersByType}), this.listComponent.getElement());
+    this.destinationsList = [...this.#destinationsModel.destinations];
+    render(new SortView, this.#listComponent.element);
+    render(this.#listComponent, this.#listConteiner);
+    render(new NewFormView({trip: this.destinationsList[0], allOffers: offersByType}), this.#listComponent.element);
     // render(new EditView({trip: this.destinationsList[1]}), this.listComponent.getElement(), RenderPosition.BEFOREEND);
 
     for (let i = 0; i < this.destinationsList.length; i++) {
-      render(new PointView({trip: this.destinationsList[i], allOffers: offersByType}), this.listComponent.getElement(), RenderPosition.AFTEREND);
+      render(new PointView({trip: this.destinationsList[i], allOffers: offersByType}), this.#listComponent.element, RenderPosition.AFTEREND);
     }
   }
 
