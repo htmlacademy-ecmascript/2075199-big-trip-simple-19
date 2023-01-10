@@ -2,13 +2,15 @@ import {createElement} from '../render.js';
 import { humanizeFullDateTravel } from '../utils.js';
 
 
-function createEditTemplate (trip) {
-  const {destination, point, pointType} = trip;
-  const {basePrice, dateFrom, dateTo} = point;
-  const {name, description} = destination;
+function createEditTemplate (trip, allOffers) {
+  const {basePrice, dateFrom, dateTo, destination, type} = trip;
+  const {description, name} = destination;
 
   const dateFromHum = humanizeFullDateTravel(dateFrom);
   const dateToHum = humanizeFullDateTravel(dateTo);
+
+  const allOffersByType = allOffers.find((offer) => offer.type === type);
+  const { offers} = allOffersByType;
 
   return (`<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -16,7 +18,7 @@ function createEditTemplate (trip) {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -74,7 +76,7 @@ function createEditTemplate (trip) {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          ${pointType}
+          ${type}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
         <datalist id="destination-list-1">
@@ -111,50 +113,15 @@ function createEditTemplate (trip) {
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
+        ${offers.map((offer) => (`
           <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-${offer.id}" ${trip.offers.includes(offer.id) ? 'checked' : ''}>
             <label class="event__offer-label" for="event-offer-luggage-1">
-              <span class="event__offer-title">Add luggage</span>
+              <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price">50</span>
+              <span class="event__offer-price">${offer.price}</span>
             </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-            <label class="event__offer-label" for="event-offer-comfort-1">
-              <span class="event__offer-title">Switch to comfort</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">80</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-            <label class="event__offer-label" for="event-offer-meal-1">
-              <span class="event__offer-title">Add meal</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">15</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-            <label class="event__offer-label" for="event-offer-seats-1">
-              <span class="event__offer-title">Choose seats</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">5</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-            <label class="event__offer-label" for="event-offer-train-1">
-              <span class="event__offer-title">Travel by train</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">40</span>
-            </label>
-          </div>
+          </div>`))}
         </div>
       </section>
 
@@ -170,23 +137,28 @@ function createEditTemplate (trip) {
 }
 
 export default class EditView {
-  constructor ({trip}) {
-    this.trip = trip;
+  #trip = null;
+  #allOffers = null;
+  #element = null;
+
+  constructor ({trip, allOffers}) {
+    this.#trip = trip;
+    this.#allOffers = allOffers;
   }
 
-  getTemplate () {
-    return createEditTemplate(this.trip);
+  get template () {
+    return createEditTemplate(this.#trip, this.#allOffers);
   }
 
-  getElement () {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element () {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
