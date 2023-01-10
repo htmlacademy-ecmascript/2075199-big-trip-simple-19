@@ -21,7 +21,7 @@ export default class ListPresenter {
   init() {
     this.#destinationsList = [...this.#destinationsModel.destinations];
     render(this.#listComponent, this.#listConteiner);
-    render(new SortView, this.#listComponent.element);
+    render(new SortView, this.#listComponent.element, RenderPosition.BEFOREEND);
     // render(new NewFormView({trip: this.#destinationsList[0], allOffers: offersByType}), this.#listComponent.element);
     // render(new EditView({trip: this.#destinationsList[1], allOffers: offersByType}), this.#listComponent.element, RenderPosition.BEFOREEND);
 
