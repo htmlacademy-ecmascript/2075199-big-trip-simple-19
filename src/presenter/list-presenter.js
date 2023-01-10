@@ -20,19 +20,7 @@ export default class ListPresenter {
   }
 
   init() {
-    this.#destinationsList = [...this.#destinationsModel.destinations];
-    render(this.#listComponent, this.#listConteiner);
-
-    if (this.#destinationsList.every((destination) => destination.isArchive)) {
-      render(new NoPointView, this.#listComponent.element);
-    } else {
-      render(new SortView, this.#listComponent.element, RenderPosition.BEFOREEND);
-      // render(new NewFormView({trip: this.#destinationsList[0], allOffers: offersByType}), this.#listComponent.element);
-      for (let i = 0; i < this.#destinationsList.length; i++) {
-        this.#renderPoint(this.#destinationsList[i], offersByType);
-      }
-    }
-
+    this.#renderList();
   }
 
   #renderPoint(trip, allOffers) {
@@ -68,6 +56,21 @@ export default class ListPresenter {
     });
 
     render(pointComponent, this.#listComponent.element);
+  }
+
+  #renderList() {
+    this.#destinationsList = [...this.#destinationsModel.destinations];
+    render(this.#listComponent, this.#listConteiner);
+
+    if (this.#destinationsList.every((destination) => destination.isArchive)) {
+      render(new NoPointView, this.#listComponent.element);
+    } else {
+      render(new SortView, this.#listComponent.element, RenderPosition.BEFOREEND);
+      // render(new NewFormView({trip: this.#destinationsList[0], allOffers: offersByType}), this.#listComponent.element);
+      for (let i = 0; i < this.#destinationsList.length; i++) {
+        this.#renderPoint(this.#destinationsList[i], offersByType);
+      }
+    }
   }
 }
 
