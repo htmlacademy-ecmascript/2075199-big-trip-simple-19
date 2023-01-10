@@ -5,6 +5,7 @@ import ListView from '../view/destination-list-view.js';
 import EditView from '../view/edit-form-view.js';
 import PointView from '../view/destination-points-view.js';
 import { offersByType } from '../mocks/destinations.js';
+import NoPointView from '../view/no-point-view.js';
 
 
 export default class ListPresenter {
@@ -21,12 +22,15 @@ export default class ListPresenter {
   init() {
     this.#destinationsList = [...this.#destinationsModel.destinations];
     render(this.#listComponent, this.#listConteiner);
-    render(new SortView, this.#listComponent.element, RenderPosition.BEFOREEND);
-    // render(new NewFormView({trip: this.#destinationsList[0], allOffers: offersByType}), this.#listComponent.element);
-    // render(new EditView({trip: this.#destinationsList[1], allOffers: offersByType}), this.#listComponent.element, RenderPosition.BEFOREEND);
 
-    for (let i = 0; i < this.#destinationsList.length; i++) {
-      this.#renderPoint(this.#destinationsList[i], offersByType);
+    if (this.#destinationsList.every((destination) => destination.isArchive)) {
+      render(new NoPointView, this.#listComponent.element);
+    } else {
+      render(new SortView, this.#listComponent.element, RenderPosition.BEFOREEND);
+      // render(new NewFormView({trip: this.#destinationsList[0], allOffers: offersByType}), this.#listComponent.element);
+      for (let i = 0; i < this.#destinationsList.length; i++) {
+        this.#renderPoint(this.#destinationsList[i], offersByType);
+      }
     }
 
   }
