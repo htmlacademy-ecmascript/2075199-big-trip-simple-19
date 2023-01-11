@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeFullDateTravel } from '../utils.js';
 
 
@@ -115,8 +115,8 @@ function createEditTemplate (trip, allOffers) {
         <div class="event__available-offers">
         ${offers.map((offer) => (`
           <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-${offer.id}" ${trip.offers.includes(offer.id) ? 'checked' : ''}>
-            <label class="event__offer-label" for="event-offer-luggage-1">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${offer.id}" type="checkbox" name="event-offer-${offer.id}" ${trip.offers.includes(offer.id) ? 'checked' : ''}>
+            <label class="event__offer-label" for="event-offer-luggage-${offer.id}">
               <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -136,29 +136,33 @@ function createEditTemplate (trip, allOffers) {
 `);
 }
 
-export default class EditView {
+export default class EditView extends AbstractView {
   #trip = null;
   #allOffers = null;
-  #element = null;
+  #handleFormSubmit = null;
+  #handlerEditClick = null;
 
-  constructor ({trip, allOffers}) {
+  constructor ({trip, allOffers, onEditClick, onFormSubmit}) {
+    super();
     this.#trip = trip;
     this.#allOffers = allOffers;
+    this.#handlerEditClick = onEditClick;
+    this.#handleFormSubmit = onFormSubmit;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template () {
     return createEditTemplate(this.#trip, this.#allOffers);
   }
 
-  get element () {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handlerEditClick();
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }
