@@ -66,7 +66,7 @@ export default class ListPresenter {
       render(new NoPointView, this.#listComponent.element);
     } else {
       render(new SortView, this.#listComponent.element, RenderPosition.BEFOREEND);
-      render(new NewFormView({trip: this.#destinationsList[0], allOffers: offersByType}), this.#listComponent.element);
+      // render(new NewFormView({trip: this.#destinationsList[0], allOffers: offersByType}), this.#listComponent.element);
       for (let i = 0; i < this.#destinationsList.length; i++) {
         this.#renderPoint(this.#destinationsList[i], offersByType);
       }
