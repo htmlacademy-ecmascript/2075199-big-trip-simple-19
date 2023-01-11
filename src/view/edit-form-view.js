@@ -139,14 +139,30 @@ function createEditTemplate (trip, allOffers) {
 export default class EditView extends AbstractView {
   #trip = null;
   #allOffers = null;
+  #handleFormSubmit = null;
+  #handlerEditClick = null;
 
-  constructor ({trip, allOffers}) {
+  constructor ({trip, allOffers, onEditClick, onFormSubmit}) {
     super();
     this.#trip = trip;
     this.#allOffers = allOffers;
+    this.#handlerEditClick = onEditClick;
+    this.#handleFormSubmit = onFormSubmit;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template () {
     return createEditTemplate(this.#trip, this.#allOffers);
   }
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handlerEditClick();
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }

@@ -23,17 +23,42 @@ export default class ListPresenter {
     this.#renderList();
   }
 
+  // #renderPoint(trip, allOffers) {
+  //   const pointComponent = new PointView({trip, allOffers});
+  //   const pointEditComponent = new EditView({trip, allOffers});
+
+  //   const replacePointToEdit = () => {
+  //     this.#listComponent.element.replaceChild(pointEditComponent.element, pointComponent.element);
+  //   };
+
+  //   const replaceEditToPoint = () => {
+  //     this.#listComponent.element.replaceChild(pointComponent.element, pointEditComponent.element);
+  //   };
+
+  //   const escKeyDownHandler = (evt) => {
+  //     if (evt.key === 'Escape' || evt.key === 'Esc') {
+  //       evt.preventDefault();
+  //       replaceEditToPoint();
+  //       document.removeEventListener('keydown', escKeyDownHandler);
+  //     }
+  //   };
+
+  //   pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  //     replacePointToEdit();
+  //     document.addEventListener('keydown', escKeyDownHandler);
+  //     pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', replaceEditToPoint);
+  //   });
+
+  //   pointEditComponent.element.addEventListener('submit', (evt) => {
+  //     evt.preventDefault();
+  //     replaceEditToPoint();
+  //     document.removeEventListener('keydown', escKeyDownHandler);
+  //   });
+
+  //   render(pointComponent, this.#listComponent.element);
+  // }
+
   #renderPoint(trip, allOffers) {
-    const pointComponent = new PointView({trip, allOffers});
-    const pointEditComponent = new EditView({trip, allOffers});
-
-    const replacePointToEdit = () => {
-      this.#listComponent.element.replaceChild(pointEditComponent.element, pointComponent.element);
-    };
-
-    const replaceEditToPoint = () => {
-      this.#listComponent.element.replaceChild(pointComponent.element, pointEditComponent.element);
-    };
 
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
@@ -43,20 +68,51 @@ export default class ListPresenter {
       }
     };
 
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-      replacePointToEdit();
-      document.addEventListener('keydown', escKeyDownHandler);
-      pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', replaceEditToPoint);
+    const pointComponent = new PointView({
+      trip,
+      allOffers,
+      onEditClick: () => {
+        replacePointToEdit.call(this);
+        document.addEventListener('keydown', escKeyDownHandler);
+      }
     });
 
-    pointEditComponent.element.addEventListener('submit', (evt) => {
-      evt.preventDefault();
-      replaceEditToPoint();
-      document.removeEventListener('keydown', escKeyDownHandler);
+    const pointEditComponent = new EditView({
+      trip,
+      allOffers,
+      onFormSubmit: () => {
+        replaceEditToPoint.call(this);
+        document.removeEventListener('keydown', escKeyDownHandler);
+      },
+      onEditClick: () => {
+        replaceEditToPoint.call(this);
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
     });
+
+    function replacePointToEdit () {
+      this.#listComponent.element.replaceChild(pointEditComponent.element, pointComponent.element);
+    }
+
+    function replaceEditToPoint () {
+      this.#listComponent.element.replaceChild(pointComponent.element, pointEditComponent.element);
+    }
+
+    // pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    //   replacePointToEdit();
+    //   document.addEventListener('keydown', escKeyDownHandler);
+    //   pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', replaceEditToPoint);
+    // });
+
+    // pointEditComponent.element.addEventListener('submit', (evt) => {
+    //   evt.preventDefault();
+    //   replaceEditToPoint();
+    //   document.removeEventListener('keydown', escKeyDownHandler);
+    // });
 
     render(pointComponent, this.#listComponent.element);
   }
+
 
   #renderList() {
     this.#destinationsList = [...this.#destinationsModel.destinations];
