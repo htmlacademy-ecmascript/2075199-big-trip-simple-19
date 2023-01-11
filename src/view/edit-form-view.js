@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeFullDateTravel } from '../utils.js';
 
 
@@ -136,29 +136,17 @@ function createEditTemplate (trip, allOffers) {
 `);
 }
 
-export default class EditView {
+export default class EditView extends AbstractView {
   #trip = null;
   #allOffers = null;
-  #element = null;
 
   constructor ({trip, allOffers}) {
+    super();
     this.#trip = trip;
     this.#allOffers = allOffers;
   }
 
   get template () {
     return createEditTemplate(this.#trip, this.#allOffers);
-  }
-
-  get element () {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

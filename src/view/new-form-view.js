@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeFullDateTravel } from '../utils.js';
 
 function createNewFormTemplate (trip, allOffers) {
@@ -142,29 +142,17 @@ function createNewFormTemplate (trip, allOffers) {
 `);
 }
 
-export default class NewFormView {
+export default class NewFormView extends AbstractView {
   #trip = null;
   #allOffers = null;
-  #element = null;
 
   constructor({trip, allOffers}) {
+    super();
     this.#trip = trip;
     this.#allOffers = allOffers;
   }
 
   get template () {
     return createNewFormTemplate(this.#trip, this.#allOffers);
-  }
-
-  get element () {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

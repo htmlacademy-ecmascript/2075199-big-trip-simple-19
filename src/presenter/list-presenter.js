@@ -1,7 +1,7 @@
-import {render, RenderPosition} from '../render.js';
+import {render} from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import ListView from '../view/destination-list-view.js';
-import NewFormView from '../view/new-form-view.js';
+// import NewFormView from '../view/new-form-view.js';
 import EditView from '../view/edit-form-view.js';
 import PointView from '../view/destination-points-view.js';
 import { offersByType } from '../mocks/destinations.js';
@@ -65,7 +65,7 @@ export default class ListPresenter {
     if (this.#destinationsList.every((destination) => destination.isArchive)) {
       render(new NoPointView, this.#listComponent.element);
     } else {
-      render(new SortView, this.#listComponent.element, RenderPosition.BEFOREEND);
+      render(new SortView, this.#listComponent.element);
       // render(new NewFormView({trip: this.#destinationsList[0], allOffers: offersByType}), this.#listComponent.element);
       for (let i = 0; i < this.#destinationsList.length; i++) {
         this.#renderPoint(this.#destinationsList[i], offersByType);
