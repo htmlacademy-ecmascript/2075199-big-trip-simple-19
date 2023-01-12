@@ -93,6 +93,10 @@ const destinationsList = [
       {
         'src': `https://loremflickr.com/248/152?random=${getRandomInt()}`,
         'description': 'Amsterdam parliament building'
+      },
+      {
+        'src': `https://loremflickr.com/248/152?random=${getRandomInt()}`,
+        'description': 'Amsterdam parliament building'
       }
     ]
   },
@@ -181,7 +185,19 @@ const destinationsList = [
       {
         'src': `https://loremflickr.com/248/152?random=${getRandomInt()}`,
         'description': 'Lisbon parliament building'
-      }
+      },
+      {
+        'src': `https://loremflickr.com/248/152?random=${getRandomInt()}`,
+        'description': 'Lisbon parliament building'
+      },
+      {
+        'src': `https://loremflickr.com/248/152?random=${getRandomInt()}`,
+        'description': 'Lisbon parliament building'
+      },
+      {
+        'src': `https://loremflickr.com/248/152?random=${getRandomInt()}`,
+        'description': 'Lisbon parliament building'
+      },
     ]
   }
 ];
@@ -368,7 +384,5 @@ function makeNewTrip (point, info) {
 function getRandomDestination () {
   return getRandomArrayElement(makeNewTrip(newData, destinationsList));
 }
-
-// console.log(getRandomDestination());
 
 export {getRandomDestination, offersByType};
