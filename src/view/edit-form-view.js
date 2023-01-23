@@ -27,9 +27,9 @@ function createEditTemplate (trip, allOffers) {
             <legend class="visually-hidden">Event type</legend>
             ${offersByType.map((offer) => (`
             <div class="event__type-item">
-            <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}">
-            <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-1">${offer.type}</label>
-          </div>`))}
+            <input id="event-type-${offer.type}-${offer.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}">
+            <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-${offer.id}">${offer.type}</label>
+          </div>`)).join('')}
           </fieldset>
         </div>
       </div>
@@ -81,7 +81,7 @@ function createEditTemplate (trip, allOffers) {
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
             </label>
-          </div>`))}
+          </div>`)).join('')}
         </div>
       </section>
 

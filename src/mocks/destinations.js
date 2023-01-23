@@ -1,6 +1,6 @@
 import { getRandomArrayElement, getRandomInt } from '../utils.js';
 
-const newData = [
+const pointsInfo = [
   {
     'basePrice': 190,
     'dateFrom': '2017-07-10T22:55:56.845Z',
@@ -84,7 +84,7 @@ const newData = [
   },
 ];
 
-const destinationsList = [
+const pointsList = [
   {
     'id': 1,
     'description': 'Amsterdam is the capital and most populous city of the Netherlands, with The Hague being the seat of government.',
@@ -367,22 +367,39 @@ const offersByType = [
   }
 ];
 
-
-function makeNewTrip (point, info) {
-  const resultArray = point.map((x) => x);
-
-  for (let i = 0; i < point.length; i++) {
-    for (let j = 0; j < info.length; j++) {
-      if(info[j].id === newData[i].destination) {
-        resultArray[i].destination = info[j];
+function makePoint (points, destination, offers) {
+  points.map((point) => {
+    const pointOffers = [];
+    point.destination = destination.find((pointId) => {
+      if (point.id === pointId.id) {
+        return pointId;
       }
-    }
-  }
-  return resultArray;
+    });
+    point.offers.map((pointId) => {
+      offers.find((pointType) => {
+        if (point.type === pointType.type) {
+          pointType.offers.find((offerId) => {
+            if (offerId.id === pointId) {
+              pointOffers.push(offerId);
+              point.offers = pointOffers;
+            }
+          });
+        }
+      });
+    });
+  });
+  return points;
 }
+
 
 function getRandomDestination () {
-  return getRandomArrayElement(makeNewTrip(newData, destinationsList));
+  return getRandomArrayElement(makePoint(pointsInfo, pointsList, offersByType));
 }
 
-export {getRandomDestination, offersByType};
+export {
+  getRandomDestination,
+  makePoint,
+  offersByType,
+  pointsInfo,
+  pointsList
+};

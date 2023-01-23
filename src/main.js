@@ -7,6 +7,7 @@ const filterElement = document.querySelector('.trip-controls__filters');
 const eventsElement = document.querySelector('.trip-events');
 const destinationsModel = new DestinationsModel();
 
+
 const listPresenter = new ListPresenter({
   listConteiner: eventsElement,
   destinationsModel,

@@ -2,31 +2,14 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDateTravel, humanizeTimeTravel } from '../utils.js';
 
 
-function createPointTemplate (trip, allOffers) {
-  const {basePrice, dateFrom, dateTo, destination, type} = trip;
+function createPointTemplate (trip) {
+  const {basePrice, dateFrom, dateTo, destination, offers, type} = trip;
   const {name} = destination;
 
   const timeFromHum = humanizeTimeTravel(dateFrom);
   const timeToHum = humanizeTimeTravel(dateTo);
   const dateFromHum = humanizeDateTravel(dateFrom);
 
-  const allOffersByType = allOffers.find((offer) => offer.type === type);
-  const { offers} = allOffersByType;
-
-  function showChecked () {
-    const visibleOffers = [];
-
-    for (let i = 0; i < offers.length; i++) {
-      for (let j = 0; j < trip.offers.length; j++) {
-        if (offers[i].id === trip.offers[j]) {
-          visibleOffers.push(offers[i]);
-        }
-      }
-    }
-    return visibleOffers;
-  }
-
-  const checkedOffers = showChecked();
 
   return (`
 <li class="trip-events__item">
@@ -48,7 +31,7 @@ function createPointTemplate (trip, allOffers) {
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      ${checkedOffers.map((offer) => (`<li class="event__offer">
+      ${offers.map((offer) => (`<li class="event__offer">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>

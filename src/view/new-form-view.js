@@ -6,7 +6,7 @@ import { offersByType } from '../mocks/destinations.js';
 function createNewFormTemplate (trip, allOffers) {
   const {basePrice, dateFrom, dateTo, destination, type} = trip;
   const {description, name, pictures} = destination;
-  const {src} = pictures[0];
+  // const {src} = pictures[0];
 
   const dateFromHum = humanizeFullDateTravel(dateFrom);
   const dateToHum = humanizeFullDateTravel(dateTo);
@@ -30,9 +30,9 @@ function createNewFormTemplate (trip, allOffers) {
             <legend class="visually-hidden">Event type</legend>
             ${offersByType.map((offer) => (`
             <div class="event__type-item">
-              <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}">
+              <input id="event-type-${offer.type}-${offer.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}">
               <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-1">${offer.type}</label>
-            </div>`))}
+            </div>`)).join('')}
           </fieldset>
         </div>
       </div>
@@ -92,7 +92,7 @@ function createNewFormTemplate (trip, allOffers) {
           <div class="event__photos-tape">
             ${pictures.map((picture) => (`
             <img class="event__photo" src="${picture.src}" alt="${picture.desctiption}">
-            `))}
+            `)).join('')}
           </div>
         </div>
       </section>
