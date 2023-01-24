@@ -13,7 +13,7 @@ const createSelectedOffersTemplate = (offers, pointTypeOffers) =>
 
 
 const createPointTemplate = (point) => {
-  const { basePrice, destination, type, offers, dateTo, dateFrom, offerByTypes } = point;
+  const { basePrice, type, offers, dateTo, dateFrom, offerByTypes, destination } = point;
   const pointTimeFrom = dateTimeFrom(dateFrom);
   const pointTimeTo = dateTimeTo(dateTo);
   const machinePointTimeFrom = machineDateTimeFrom(dateFrom);
@@ -54,15 +54,11 @@ const createPointTemplate = (point) => {
 
 export default class PointView extends AbstractView {
   #point = null;
-  #offersByTypes = null;
-  #destinations = null;
   #handleEditClick = null;
 
-  constructor({point, offersByTypes, destinations,onEditClick}) {
+  constructor({point,onEditClick}) {
     super();
     this.#point = point;
-    this.#offersByTypes = offersByTypes;
-    this.#destinations = destinations;
     this.#handleEditClick = onEditClick;
 
     this.element.querySelector('.event__rollup-btn')
@@ -70,7 +66,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return createPointTemplate(this.#point, this.#offersByTypes, this.#destinations);
+    return createPointTemplate(this.#point);
   }
 
   #editClickHandler = (evt) => {

@@ -4,7 +4,7 @@ import { RenderPosition } from '../framework/render.js';
 import ListView from '../view/list-view.js';
 import TripSortView from '../view/sort-view.js';
 import PointView from '../view/point-view.js';
-import NewPointFormView from '../view/new-form-view.js';
+// import NewPointFormView from '../view/new-form-view.js';
 import EditPointFormView from '../view/edit-form-view.js';
 import NoPointView from '../view/no-point-view.js';
 
