@@ -1,4 +1,3 @@
-// import { render, replace } from '../framework/render.js';
 import { render } from '../framework/render.js';
 import { RenderPosition } from '../framework/render.js';
 import ListView from '../view/list-view.js';
@@ -13,6 +12,9 @@ export default class ListPresenter {
   #pointModel = null;
   #listPoint = null;
   #component = new ListView();
+  #sortComponent = new TripSortView();
+  #noPointComponent = new NoPointView();
+  // #newFormCompanent = new NewPointFormView();
 
   constructor({container, pointModel}) {
     this.#container = container;
@@ -23,6 +25,18 @@ export default class ListPresenter {
     this.#listPoint = [...this.#pointModel.point];
     this.#renderList();
   }
+
+  #renderSort() {
+    render(this.#sortComponent, this.#component.element, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderNoPoint() {
+    render(this.#noPointComponent, this.#component.element, RenderPosition.AFTERBEGIN);
+  }
+
+  // #renderNewPointForm() {
+  //   render(this.#renderNewPointForm, this.#component, RenderPosition.AFTERBEGIN);
+  // }
 
   #renderPoint(point) {
 
@@ -53,14 +67,6 @@ export default class ListPresenter {
       }
     });
 
-    // function replacePointToForm() {
-    //   replace(pointEditComponet, pointComponent);
-    // }
-
-    // function replaceFormToPoint() {
-    //   replace(pointComponent, pointEditComponet);
-    // }
-
     function replacePointToForm () {
       this.#component.element.replaceChild(pointEditComponet.element, pointComponent.element);
     }
@@ -76,12 +82,12 @@ export default class ListPresenter {
     render(this.#component, this.#container);
 
     if (this.#listPoint.every((point) => point === null)) {
-      render(new NoPointView(), this.#component.element, RenderPosition.BEFOREBEGIN);
+      this.#renderNoPoint();
       return;
     }
-    // render (new EditPointFormView({point: this.listPoint[0]}), this.component.element, RenderPosition.AFTERBEGIN);
     // render (new NewPointFormView({point: this.#listPoint[0]}), this.#component.element, RenderPosition.BEFOREEND);
-    render (new TripSortView(), this.#component.element, RenderPosition.BEFOREBEGIN);
+    // render (new TripSortView(), this.#component.element, RenderPosition.BEFOREBEIN);
+    this.#renderSort();
     for (let i = 0; i < this.#listPoint.length; i++) {
       this.#renderPoint(this.#listPoint[i]);
     }

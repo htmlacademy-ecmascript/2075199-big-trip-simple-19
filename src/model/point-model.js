@@ -3,7 +3,7 @@ import { routPoints } from '../mocks/rout-points.js';
 import { offersByTypes } from '../mocks/additional-options.js';
 import { destinations } from '../mocks/destinations.js';
 
-const POINT_COUNT = 50;
+const POINT_COUNT = 0;
 
 const getRandomPoint = () => getRandomArrayElement(routPoints);
 
