@@ -37,46 +37,6 @@ export default class ListPresenter {
   //   render(this.#renderNewPointForm, this.#component, RenderPosition.AFTERBEGIN);
   // }
 
-  // #renderPoint(point) {
-
-  //   const escKeyDownHandler = (evt) => {
-  //     if (evt.key === 'Escape' || evt.key === 'Esc') {
-  //       evt.preventDefault();
-  //       replaceFormToPoint.call(this);
-  //       document.removeEventListener('keydown', escKeyDownHandler);
-  //     }
-  //   };
-
-  //   const pointComponent = new PointView({
-  //     point,
-  //     onEditClick: () => {
-  //       replacePointToForm.call(this);
-  //       document.addEventListener('keydown', escKeyDownHandler);
-  //     }
-  //   });
-
-  //   const pointEditComponet = new EditPointFormView({
-  //     point,
-  //     onFormSubmit: () => {
-  //       replaceFormToPoint.call(this);
-  //       document.removeEventListener('keydown', escKeyDownHandler);
-  //     },
-  //     onEditCloseClick: () => {
-  //       replaceFormToPoint.call(this);
-  //     }
-  //   });
-
-  //   function replacePointToForm () {
-  //     this.#component.element.replaceChild(pointEditComponet.element, pointComponent.element);
-  //   }
-
-  //   function replaceFormToPoint() {
-  //     this.#component.element.replaceChild(pointComponent.element, pointEditComponet.element);
-  //   }
-
-  //   render(pointComponent, this.#component.element, RenderPosition.BEFOREEND);
-  // }
-
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({pointConteiner: this.#component.element});
 
