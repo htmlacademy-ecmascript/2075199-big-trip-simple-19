@@ -1,11 +1,15 @@
-import { getRandomArrayElement } from '../utils';
+import { getRandomArrayElement } from '../utils/utils';
 import { routPoints } from '../mocks/rout-points.js';
 import { offersByTypes } from '../mocks/additional-options.js';
 import { destinations } from '../mocks/destinations.js';
+import { nanoid } from 'nanoid';
 
-const POINT_COUNT = 50;
+const POINT_COUNT = 3;
 
-const getRandomPoint = () => getRandomArrayElement(routPoints);
+const getRandomPoint = () => ({
+  id: nanoid(),
+  ...getRandomArrayElement(routPoints),
+});
 
 export default class PointModel {
   #points = Array.from({length: POINT_COUNT}, getRandomPoint);
@@ -16,7 +20,6 @@ export default class PointModel {
     return this.#points.map((point) => {
       const offerByTypes = this.#allOffers.find((offer) => offer.type === point.type);
       const destination = this.#destinations.find((direction) => direction.id === point.destination);
-      // const destination = pointDestination;
       return {
         ...point,
         destination,

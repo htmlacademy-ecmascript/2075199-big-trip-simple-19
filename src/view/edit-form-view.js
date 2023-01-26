@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { fullDateFrom } from '../utils.js';
-import { fullDateTo } from '../utils';
+import { fullDateFrom } from '../utils/utils.js';
+import { fullDateTo } from '../utils/utils';
 
 const createAdditionOptionsTemplate = (offers, pointTypeOffers) =>
 
@@ -139,7 +139,7 @@ export default class NewPointFormView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(this.#point);
   };
 
   #editCloseHandler = () => {

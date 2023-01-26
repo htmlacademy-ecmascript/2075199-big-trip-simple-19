@@ -1,18 +1,22 @@
-// import { render, replace } from '../framework/render.js';
 import { render } from '../framework/render.js';
 import { RenderPosition } from '../framework/render.js';
 import ListView from '../view/list-view.js';
 import TripSortView from '../view/sort-view.js';
-import PointView from '../view/point-view.js';
 // import NewPointFormView from '../view/new-form-view.js';
-import EditPointFormView from '../view/edit-form-view.js';
 import NoPointView from '../view/no-point-view.js';
+import PointPresenter from './point-presenter.js';
+import { updateItem } from '../utils/common.js';
 
 export default class ListPresenter {
   #container = null;
   #pointModel = null;
   #listPoint = null;
   #component = new ListView();
+  #sortComponent = new TripSortView();
+  #noPointComponent = new NoPointView();
+  // #newFormCompanent = new NewPointFormView();
+
+  #pointsPresenters = new Map();
 
   constructor({container, pointModel}) {
     this.#container = container;
@@ -24,64 +28,54 @@ export default class ListPresenter {
     this.#renderList();
   }
 
+  #handelPointChange = (updatedPoint) => {
+    this.#pointModel = updateItem(this.#listPoint, updatedPoint);
+    this.#pointsPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
+
+  #handelModeChange = () => {
+    this.#pointsPresenters.forEach((presenter) => {
+      presenter.resetView();
+    });
+  };
+
+  #renderSort() {
+    render(this.#sortComponent, this.#component.element, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderNoPoint() {
+    render(this.#noPointComponent, this.#component.element, RenderPosition.AFTERBEGIN);
+  }
+
+  // #renderNewPointForm() {
+  //   render(this.#renderNewPointForm, this.#component, RenderPosition.AFTERBEGIN);
+  // }
+
   #renderPoint(point) {
-
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormToPoint.call(this);
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const pointComponent = new PointView({
-      point,
-      onEditClick: () => {
-        replacePointToForm.call(this);
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
+    const pointPresenter = new PointPresenter({
+      pointConteiner: this.#component.element,
+      onDataChange: this.#handelPointChange,
+      onModeChange: this.#handelModeChange
     });
+    pointPresenter.init(point);
+    this.#pointsPresenters.set(point.id, pointPresenter);
+  }
 
-    const pointEditComponet = new EditPointFormView({
-      point,
-      onFormSubmit: () => {
-        replaceFormToPoint.call(this);
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
-      onEditCloseClick: () => {
-        replaceFormToPoint.call(this);
-      }
-    });
-
-    // function replacePointToForm() {
-    //   replace(pointEditComponet, pointComponent);
-    // }
-
-    // function replaceFormToPoint() {
-    //   replace(pointComponent, pointEditComponet);
-    // }
-
-    function replacePointToForm () {
-      this.#component.element.replaceChild(pointEditComponet.element, pointComponent.element);
-    }
-
-    function replaceFormToPoint() {
-      this.#component.element.replaceChild(pointComponent.element, pointEditComponet.element);
-    }
-
-    render(pointComponent, this.#component.element, RenderPosition.BEFOREEND);
+  #clearPointList() {
+    this.#pointsPresenters.forEach((presenter) => presenter.destroy);
+    this.#pointsPresenters.clear();
   }
 
   #renderList() {
     render(this.#component, this.#container);
 
     if (this.#listPoint.every((point) => point === null)) {
-      render(new NoPointView(), this.#component.element, RenderPosition.BEFOREBEGIN);
+      this.#renderNoPoint();
       return;
     }
-    // render (new EditPointFormView({point: this.listPoint[0]}), this.component.element, RenderPosition.AFTERBEGIN);
     // render (new NewPointFormView({point: this.#listPoint[0]}), this.#component.element, RenderPosition.BEFOREEND);
-    render (new TripSortView(), this.#component.element, RenderPosition.BEFOREBEGIN);
+    // render (new TripSortView(), this.#component.element, RenderPosition.BEFOREBEIN);
+    this.#renderSort();
     for (let i = 0; i < this.#listPoint.length; i++) {
       this.#renderPoint(this.#listPoint[i]);
     }
