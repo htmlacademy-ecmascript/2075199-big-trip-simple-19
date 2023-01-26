@@ -2,16 +2,26 @@ import { render, replace, remove } from '../framework/render.js';
 import PointView from '../view/point-view.js';
 import EditPointFormView from '../view/edit-form-view.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class PointPresenter {
   #pointConteiner = null;
+  #handlerPointChange = null;
+  #handelModeChange = null;
 
   #pointComponent = null;
   #pointEditComponent = null;
 
   #point = null;
+  #mode = Mode.DEFAULT;
 
-  constructor({pointConteiner}) {
+  constructor({pointConteiner, onDataChange, onModeChange}) {
     this.#pointConteiner = pointConteiner;
+    this.#handlerPointChange = onDataChange;
+    this.#handelModeChange = onModeChange;
   }
 
   init(point) {
@@ -36,11 +46,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#pointConteiner.contains(prevPointComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#pointConteiner.contains(prevPointEditComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
     }
 
@@ -53,14 +63,23 @@ export default class PointPresenter {
     remove(this.#pointEditComponent);
   }
 
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToPoint();
+    }
+  }
+
   #replasePointToForm() {
     replace(this.#pointEditComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#handelModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   #replaceFormToPoint() {
     replace(this.#pointComponent, this.#pointEditComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   }
 
   #escKeyDownHandler = (evt) => {
@@ -78,7 +97,8 @@ export default class PointPresenter {
     this.#replaceFormToPoint();
   };
 
-  #handelFormSumnit = () => {
+  #handelFormSumnit = (point) => {
+    this.#handlerPointChange(point);
     this.#replaceFormToPoint();
   };
 }

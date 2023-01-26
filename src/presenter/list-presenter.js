@@ -5,6 +5,7 @@ import TripSortView from '../view/sort-view.js';
 // import NewPointFormView from '../view/new-form-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
+import { updateItem } from '../utils/common.js';
 
 export default class ListPresenter {
   #container = null;
@@ -15,6 +16,8 @@ export default class ListPresenter {
   #noPointComponent = new NoPointView();
   // #newFormCompanent = new NewPointFormView();
 
+  #pointsPresenters = new Map();
+
   constructor({container, pointModel}) {
     this.#container = container;
     this.#pointModel = pointModel;
@@ -24,6 +27,17 @@ export default class ListPresenter {
     this.#listPoint = [...this.#pointModel.point];
     this.#renderList();
   }
+
+  #handelPointChange = (updatedPoint) => {
+    this.#pointModel = updateItem(this.#listPoint, updatedPoint);
+    this.#pointsPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
+
+  #handelModeChange = () => {
+    this.#pointsPresenters.forEach((presenter) => {
+      presenter.resetView();
+    });
+  };
 
   #renderSort() {
     render(this.#sortComponent, this.#component.element, RenderPosition.AFTERBEGIN);
@@ -38,9 +52,18 @@ export default class ListPresenter {
   // }
 
   #renderPoint(point) {
-    const pointPresenter = new PointPresenter({pointConteiner: this.#component.element});
-
+    const pointPresenter = new PointPresenter({
+      pointConteiner: this.#component.element,
+      onDataChange: this.#handelPointChange,
+      onModeChange: this.#handelModeChange
+    });
     pointPresenter.init(point);
+    this.#pointsPresenters.set(point.id, pointPresenter);
+  }
+
+  #clearPointList() {
+    this.#pointsPresenters.forEach((presenter) => presenter.destroy);
+    this.#pointsPresenters.clear();
   }
 
   #renderList() {
