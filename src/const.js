@@ -1,3 +1,8 @@
-// const filter = {
-//   zdjv
-// }
+const SortType = {
+  DAY: 'day',
+  PRICE: 'price',
+};
+
+export {
+  SortType,
+};
