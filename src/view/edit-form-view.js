@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { fullDateFrom } from '../utils/utils.js';
 import { fullDateTo } from '../utils/utils';
 
@@ -63,10 +63,10 @@ const createNewPointFormTemplate = (point) => {
                   </div>
 
                   <div class="event__field-group  event__field-group--destination">
-                    <label class="event__label  event__type-output" for="event-destination-1">
+                    <label class="event__label  event__type-output" for="event-destination-${id}">
                      ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-${id}">
+                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${id}">
                     <datalist id="destination-list-${id}">
                       ${destinationNameTemplate}
                     </datalist>
@@ -113,36 +113,79 @@ const createNewPointFormTemplate = (point) => {
   );
 };
 
-export default class NewPointFormView extends AbstractView {
-  #point = null;
-  #offersByTypes = null;
-  #destinations = null;
+export default class EditPointFormView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleEditCloseClick = null;
 
-  constructor({point, offersByTypes, destinations, onFormSubmit, onEditCloseClick}) {
+  constructor({point, onFormSubmit, onEditCloseClick}) {
     super();
-    this.#point = point;
-    this.#offersByTypes = offersByTypes;
-    this.#destinations = destinations;
+
+    this._setState(EditPointFormView.parsePointToState(point));
     this.#handleFormSubmit = onFormSubmit;
     this.#handleEditCloseClick = onEditCloseClick;
 
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#editCloseHandler);
+    // this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    // this.element.querySelector('.event__rollup-btn')
+    //   .addEventListener('click', this.#editCloseHandler);
+
+    this._restoreHandlers();
   }
 
   get template() {
-    return createNewPointFormTemplate(this.#point, this.#offersByTypes, this.#destinations);
+    return createNewPointFormTemplate(this._state);
+  }
+
+  reset(point) {
+    this.updateElement(EditPointFormView.parsePointToState(point));
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editCloseHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#eventTypeHendler);
+    this.element.querySelector('.event__field-group').addEventListener('change', this.#eventDestinationHAndler);
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#point);
+    this.#handleFormSubmit(EditPointFormView.parseStateToPoint(this._state));
   };
 
   #editCloseHandler = () => {
     this.#handleEditCloseClick();
   };
+
+  #eventTypeHendler = (evt) => {
+    this._state.type = evt.target.value;
+    const offerByTypes =
+      this._state.offersByTypes.find((offer) => offer.type === this._state.type);
+
+    this.updateElement({
+      type: this._state.type,
+      offerByTypes: offerByTypes,
+    });
+  };
+
+  #eventDestinationHAndler = (evt) => {
+    const name = evt.target.value;
+    const newDestination =
+      this._state.destinations.find((direction) => direction.name === name);
+
+    this.updateElement({
+      destination: newDestination,
+    });
+  };
+
+  static parsePointToState(point) {
+    return {
+      ...point,
+    };
+  }
+
+  static parseStateToPoint(state) {
+    const point = { ...state };
+
+    return point;
+  }
+
 }
