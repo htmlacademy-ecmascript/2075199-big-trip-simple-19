@@ -1,6 +1,9 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { fullDateFrom } from '../utils/utils.js';
 import { fullDateTo } from '../utils/utils';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createAdditionOptionsTemplate = (offers, pointTypeOffers) =>
 
