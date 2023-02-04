@@ -33,6 +33,11 @@ const createEventTypeItemTemplate = (offersByTypes, type, id) =>
     </div>`);
   }).join('');
 
+const createPicturesTemplate = (pictures) =>
+  pictures.map((picture) =>
+    ` <img class="event__photo" src="${picture.src}" alt="${picture.description}">`
+  ).join('');
+
 
 const createNewPointFormTemplate = (point) => {
   const { basePrice, dateFrom, dateTo, destination, type, offers, id, offerByTypes, offersByTypes, destinations } = point;
@@ -41,6 +46,8 @@ const createNewPointFormTemplate = (point) => {
   const additionOptionsTemplate = createAdditionOptionsTemplate(offers, offerByTypes);
   const eventTypeItemTemplate = createEventTypeItemTemplate(offersByTypes, type, id);
   const destinationNameTemplate = createDestinationNameTemplate(destinations);
+  const picturesTemplate = createPicturesTemplate(destination.pictures);
+
 
   return (
     `<li class="trip-events__item">
@@ -107,6 +114,13 @@ const createNewPointFormTemplate = (point) => {
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                     <p class="event__destination-description">${destination.description}</p>
+
+                    <div class="event__photos-container">
+                      <div class="event__photos-tape">
+                        ${picturesTemplate}
+                      </div>
+                    </div>
+
                   </section>
                 </section>
               </form>
