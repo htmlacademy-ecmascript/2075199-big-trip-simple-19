@@ -15,6 +15,15 @@ export default class PointModel extends Observable {
   #points = Array.from({length: POINT_COUNT}, getRandomPoint);
   #allOffers = offersByTypes;
   #destinations = destinations;
+  #pointsApiService = null;
+
+  constructor({pointsApiService}) {
+    super();
+    this.#pointsApiService = pointsApiService;
+    this.#pointsApiService.points.then((point) => {
+      console.log(point);
+    });
+  }
 
   get points() {
     return this.#points.map((point) => {
