@@ -2,12 +2,14 @@ const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.
 
 const getRandom = (items) => items[Math.floor(Math.random() * items.length)];
 
-function updateItem (items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
+const firstLetterUp = (item) => {
+  if (!item) {
+    return item;}
+  return item[0].toUpperCase() + item.slice(1);
+};
 
 export {
   getRandomArrayElement,
   getRandom,
-  updateItem,
+  firstLetterUp,
 };
