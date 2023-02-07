@@ -23,4 +23,22 @@ export default class PointsApiService extends ApiService {
 
     return parsedResponse;
   }
+
+  #adaptToServer(point) {
+    const adaptedPoint = {...point,
+      'base_price': point.basePrice,
+      'date_from': point.dateFrom.toISOString(),
+      'date_to': point.dateTo.toISOString(),
+    };
+
+    delete adaptedPoint.basePrice;
+    delete adaptedPoint.dateFrom;
+    delete adaptedPoint.dateTo;
+    delete adaptedPoint.destinations;
+    delete adaptedPoint.offerByTypes;
+    delete adaptedPoint.offersByTypes;
+
+
+
+  }
 }
