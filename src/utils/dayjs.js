@@ -31,7 +31,7 @@ function getWeightForNullDate (dateA, dateB) {
   return null;
 }
 
-function sortPointDayUp (pointA, pointB) {
+function sortPointDay (pointA, pointB) {
   const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
 
   return weight ?? dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
@@ -53,6 +53,6 @@ export {
   machineDayDate,
   machineDateTimeFrom,
   machineDateTimeTo,
-  sortPointDayUp,
+  sortPointDay,
   sortPointPrice,
 };
