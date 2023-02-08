@@ -1,33 +1,30 @@
 import { render, remove, RenderPosition } from '../framework/render';
 import NewPointFormView from '../view/new-form-view';
-import { nanoid } from 'nanoid';
 import { UserActions, UpdateType } from '../const';
-import { offersByTypes } from '../mocks/additional-options';
 
 
 export default class NewPointPresenter {
   #listContainer = null;
   #handleDataChange = null;
   #handleDestroy = null;
-  #allOffers = offersByTypes;
-
-
-  #pointComponent = null;
+  #point = null;
   #newPointFormComponent = null;
 
   constructor({listContainer, onDataChange, onDestroy}) {
     this.#listContainer = listContainer;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
-
   }
 
-  init() {
+
+  init(point) {
     if (this.#newPointFormComponent !== null) {
       return;
     }
 
+    this.#point = point;
     this.#newPointFormComponent = new NewPointFormView({
+      point: this.#point,
       onFormSubmit: this.#handleFormSubmit,
       onDeleteClick: this.#handleDeleteClick
     });
@@ -49,17 +46,31 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#newPointFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#newPointFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#newPointFormComponent.shake(resetFormState);
+  }
 
   #handleFormSubmit = (point) => {
-    const offerByTypes = this.#allOffers.find((offer) => offer.type === point.type);
     this.#handleDataChange(
       UserActions.ADD_POINT,
-      UpdateType.MINOR,
-      // Пока у нас нет сервера, который бы после сохранения
-      // выдывал честный id задачи, нам нужно позаботиться об этом самим
-      {id: nanoid(), offerByTypes, ...point},
+      UpdateType.MAJOR,
+      point,
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {
