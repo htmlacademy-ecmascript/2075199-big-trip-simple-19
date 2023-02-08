@@ -1,5 +1,3 @@
-const getRandom = (items) => items[Math.floor(Math.random() * items.length)];
-
 const firstLetterUp = (item) => {
   if (!item) {
     return item;}
@@ -7,6 +5,5 @@ const firstLetterUp = (item) => {
 };
 
 export {
-  getRandom,
   firstLetterUp,
 };
