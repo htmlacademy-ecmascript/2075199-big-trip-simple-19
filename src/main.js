@@ -33,3 +33,4 @@ function handleNewTaskButtonClick() {
 
 filterPresenter.init();
 listPresenter.init();
+pointsModel.init();
