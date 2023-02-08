@@ -2,6 +2,7 @@ import { render, remove, RenderPosition } from '../framework/render.js';
 import ListView from '../view/list-view.js';
 import TripSortView from '../view/sort-view.js';
 import NoPointView from '../view/no-point-view.js';
+import LoadingView from '../view/loader-view.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import { SortType, FilterType, UpdateType, UserActions } from '../const.js';
@@ -13,6 +14,7 @@ export default class ListPresenter {
   #pointsModel = null;
   #filterModel = null;
   #listComponent = new ListView();
+  #loadingComponent = new LoadingView();
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #currentFilterType = FilterType.EVERYTHING;
@@ -20,6 +22,7 @@ export default class ListPresenter {
   #sortComponent = null;
   #noPointComponent = null;
   #newPointPresenter = null;
+  #isLoading = true;
 
   constructor({listContainer, pointsModel, filterModel, onNewPointDestroy}) {
     this.#listContainer = listContainer;
@@ -53,7 +56,7 @@ export default class ListPresenter {
 
   init() {
     this.#renderList();
-    this.#renderSort();
+    // this.#renderSort();
   }
 
   createPoint() {
@@ -95,6 +98,12 @@ export default class ListPresenter {
         this.#clearList({resetSortType: true, resetFilterType: true});
         this.#renderList();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderSort();
+        this.#renderList();
+        break;
     }
   };
 
@@ -126,6 +135,10 @@ export default class ListPresenter {
     this.#pointPresenters.set(point.id, pointPresenters);
   }
 
+  #renderLoader() {
+    render(this.#loadingComponent, this.#listComponent.element, RenderPosition.BEFOREBEGIN);
+  }
+
   #renderSort() {
     this.#sortComponent = new TripSortView({
       onSortTypeChange: this.#handleSortTypeChange
@@ -154,6 +167,8 @@ export default class ListPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
+    remove(this.#loadingComponent);
+
 
     if (this.#noPointComponent) {
       remove(this.#noPointComponent);
@@ -175,6 +190,11 @@ export default class ListPresenter {
 
     const points = this.points;
     const pointCount = points.length;
+
+    if (this.#isLoading) {
+      this.#renderLoader();
+      return;
+    }
 
     if (pointCount === 0) {
       this.#renderNoPointComponent();
