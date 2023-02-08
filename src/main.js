@@ -3,10 +3,16 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import PointModel from './model/point-model.js';
 import FilterModel from './model/filter-model.js';
 import NewPointButton from './view/new-point-button-view.js';
+import PointsApiService from './points-api-service.js';
+
+const END_POINT = 'https://19.ecmascript.pages.academy/big-trip-simple';
+const AUTHORIZATION = 'Basic eodknsdfjgsdk983';
 
 const siteTripElement = document.querySelector('.trip-events');
 const siteControlsElement = document.querySelector('.trip-controls__filters');
-const pointsModel = new PointModel();
+const pointsModel = new PointModel({
+  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
+});
 const filterModel = new FilterModel();
 const filterPresenter = new FilterPresenter({filterContainer: siteControlsElement, filterModel, pointsModel});
 const listPresenter = new ListPresenter({listContainer: siteTripElement, filterModel, pointsModel, onNewPointDestroy: handleNewPointFormClose});
@@ -27,3 +33,4 @@ function handleNewTaskButtonClick() {
 
 filterPresenter.init();
 listPresenter.init();
+pointsModel.init();
