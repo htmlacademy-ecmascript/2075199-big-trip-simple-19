@@ -31,9 +31,9 @@ const createSectionOffersTemplate = (type, offers, offerByTypes, isDisabled) => 
 
         </div>
       </section>`);
-  } else {
-    return '';
   }
+
+  return '';
 };
 
 const createSectionDestinationTemplate = (destination) => {
@@ -60,9 +60,9 @@ const createSectionDestinationTemplate = (destination) => {
     </div>
     </section>`
     );
-  } else {
-    return '';
   }
+
+  return '';
 };
 
 const createDestinationNameTemplate = (destinations) =>

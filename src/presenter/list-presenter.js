@@ -2,6 +2,7 @@ import { render, remove, RenderPosition } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import ListView from '../view/list-view.js';
 import TripSortView from '../view/sort-view.js';
+import ServerErrorView from '../view/server-error-view.js';
 import NoPointView from '../view/no-point-view.js';
 import LoadingView from '../view/loader-view';
 import PointPresenter from './point-presenter.js';
@@ -20,6 +21,7 @@ export default class ListPresenter {
   #pointsModel = null;
   #filterModel = null;
   #listComponent = new ListView();
+  #serverErrorComponent = new ServerErrorView();
   #loadingComponent = new LoadingView();
   #pointPresenter = new Map();
   #currentSortType = SortType.DAY;
@@ -28,17 +30,20 @@ export default class ListPresenter {
   #sortComponent = null;
   #noPointComponent = null;
   #newPointPresenter = null;
+  #newPointButtonDisable = null;
   #isLoading = true;
   #isNewEventOpened = false;
+  #serverError = true;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({listContainer, pointsModel, filterModel, onNewPointDestroy}) {
+  constructor({listContainer, pointsModel, filterModel, onNewPointDestroy, onNewPointButtonDisable}) {
     this.#listContainer = listContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#newPointButtonDisable = onNewPointButtonDisable;
 
     this.#newPointPresenter = new NewPointPresenter({
       listContainer: this.#listComponent.element,
@@ -127,6 +132,7 @@ export default class ListPresenter {
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
+        remove(this.#serverErrorComponent);
         remove(this.#loadingComponent);
         this.#renderSort();
         this.#renderList();
@@ -158,6 +164,10 @@ export default class ListPresenter {
 
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
+  }
+
+  #renderServerError() {
+    render(this.#serverErrorComponent, this.#listComponent.element, RenderPosition.BEFOREBEGIN);
   }
 
   #renderLoader() {
@@ -194,6 +204,7 @@ export default class ListPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#loadingComponent);
+    remove(this.#serverErrorComponent);
 
     if (this.#noPointComponent) {
       remove(this.#noPointComponent);
@@ -218,6 +229,12 @@ export default class ListPresenter {
 
     if (this.#isLoading) {
       this.#renderLoader();
+      return;
+    }
+
+    if (this.#pointsModel.serverError === true) {
+      this.#renderServerError();
+      this.#newPointButtonDisable();
       return;
     }
 
